@@ -1,0 +1,111 @@
+/* GLOBAL */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f9f9f9;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  background: white;
+  min-height: 100vh;
+}
+
+/* HERO */
+.hero {
+  position: relative;
+  height: 220px;
+  background-image: url('/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+}
+
+.hero h1 {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(28px, 5vw, 48px);
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  max-width: 600px;
+  margin: -25px auto 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  position: relative;
+  z-index: 2;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  cursor: pointer;
+  background: #f1f1f1;   /* light gray */
+  color: #333;           /* dark text */
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.tabs button.active {
+  background: #4CAF50;
+  color: white;
+  font-weight: bold;
+  transform: scale(0.97);
+}
+.tabs button:hover {
+  background: #c8e6c9; /* light green */
+  color: #1b5e20;      /* dark green text */
+}
+
+/* CONTENT */
+.content {
+  padding: 20px;
+  line-height: 1.6;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.post-item:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* DESKTOP IMPROVEMENTS */
+@media (min-width: 768px) {
+
+  .hero {
+    height: 300px;
+    font-size: 36px;
+  }
+
+  .content {
+    padding: 40px;
+    font-size: 18px;
+  }
+
+  .tabs {
+    margin-top: -25px;
+  }
+}
