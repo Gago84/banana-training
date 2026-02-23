@@ -5,6 +5,7 @@ import "./App.css";
 
 function App() {
   
+  // About data
   const [aboutData, setAboutData] = useState(null);
   const [tab, setTab] = useState("about");
   // 2. Khai báo state để chứa dữ liệu từ Firestore
@@ -30,7 +31,22 @@ useEffect(() => {
 
   return () => unsub();
 }, []);
+      useEffect(() => {
+        const colRef = collection(db, "about");
 
+        const unsub = onSnapshot(colRef, (snapshot) => {
+          if (!snapshot.empty) {
+            const firstDoc = snapshot.docs[0].data();
+            setAboutData(firstDoc);
+          } else {
+            console.log("Collection about rỗng");
+          }
+        }, (error) => {
+          console.error("Firestore error:", error);
+        });
+
+        return () => unsub();
+      }, []);
   return (
   <div className="container">
 
@@ -77,39 +93,27 @@ useEffect(() => {
     </div>
 
     <div className="content">
-{tab === "about" && (
-  <>
-    <h2>Handstand: Học Cách "Đứng" Để Thấu Hiểu Bản Thân</h2>
-
-    <div style={{ lineHeight: "1.8", whiteSpace: "pre-line" }}>
-      Handstand – Trồng cây chuối – không chỉ là một động tác hình thể, 
-      mà là một trải nghiệm tự nhiên đầy mê hoặc. Khi đảo ngược thế giới, 
-      tôi cảm nhận rõ rệt sự giao thoa giữa thăng bằng tâm trí và sức mạnh thể chất.
-
-      {"\n\n"}
-      Hãy thử tưởng tượng bạn đang học đứng lại từ đầu. Thay vì đôi chân quen thuộc, 
-      giờ đây đôi tay gánh vác cả cơ thể. Cảm giác ấy thú vị và thuần khiết tựa như 
-      một đứa trẻ chập chững tập đi.
-
-      {"\n\n"}
-      🔬 Về mặt khoa học, Handstand là liều thuốc quý cho sức khỏe:
-
-      {"\n\n"}
-      ❤️ Hệ tuần hoàn: Máu được bơm ngược về tim, thúc đẩy sự lưu thông và 
-      giúp trái tim hoạt động hiệu quả hơn.
-
-      {"\n\n"}
-      💪 Sức mạnh toàn thân: Để giữ được thăng bằng, hệ thống cơ từ vai, lưng, 
-      bụng đến đùi phải hoạt động hết công suất và phối hợp nhịp nhàng.
-
-      {"\n\n"}
-      Thực tế, Handstand chưa bao giờ là dễ dàng, dù chỉ trong một giây. 
-      Đó là cuộc chiến bền bỉ giữa ý chí và những đầu ngón tay. 
-      Nó cũng giống như cuộc sống: Chúng ta phải không ngừng nỗ lực, 
-      điều chỉnh từng chút một để tìm thấy điểm cân bằng và tiến bộ mỗi ngày.
-    </div>
-  </>
-)}
+        {/* 🔹 ABOUT TAB */}
+        {tab === "about" && (
+          <>
+            {aboutData ? (
+              <>
+                <h2>{aboutData.title}</h2>
+                  <div className="about-content">
+                    {aboutData.content.split("\n").map((paragraph, index) =>
+                      paragraph.trim() === "" ? (
+                        <br key={index} />
+                      ) : (
+                        <p key={index}>{paragraph}</p>
+                      )
+                    )}
+                  </div>
+              </>
+            ) : (
+              <p>Đang tải dữ liệu...</p>
+            )}
+          </>
+        )}
 
       {tab === "exercise" && (
         <>
