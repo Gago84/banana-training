@@ -1,113 +1,139 @@
-import { useState, useEffect } from "react"; // 1. Thêm useEffect
-import { db } from "./firebase/config"; // Đảm bảo bạn đã export db từ file config.js
-import { collection, onSnapshot, query, doc } from "firebase/firestore"; // Thêm collection và query
+import { useState, useEffect } from "react";
+import { db } from "./firebase/config";
+import { collection, onSnapshot, doc } from "firebase/firestore";
 import "./App.css";
 
 function App() {
-  
-  // About data
+
   const [aboutData, setAboutData] = useState(null);
   const [tab, setTab] = useState("about");
-  // 2. Khai báo state để chứa dữ liệu từ Firestore
-const [tanManData, setTanManData] = useState([]); // Đổi {} thành []
-// 1. Thêm một state để lưu ID của bài viết đang được mở
-const [expandedId, setExpandedId] = useState(null);
-  // 3. Lấy dữ liệu realtime từ Firestore
-useEffect(() => {
-  // 1. Trỏ đến cả Collection 'other' thay vì 1 ID cố định
-  const colRef = collection(db, "other");
-  
-  // 2. Lắng nghe thay đổi trên toàn bộ collection
-  const unsub = onSnapshot(colRef, (snapshot) => {
-    const docs = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    
-    // Lưu vào state dưới dạng mảng (Array)
-    setTanManData(docs);
-    console.log("Danh sách bài viết mới:", docs);
-  });
+  const [tanManData, setTanManData] = useState([]);
+  const [expandedId, setExpandedId] = useState(null);
 
-  return () => unsub();
-}, []);
-      useEffect(() => {
-        const colRef = collection(db, "about");
+  // Thêm state để lưu video
+  const [videos, setVideos] = useState({});
 
-        const unsub = onSnapshot(colRef, (snapshot) => {
-          if (!snapshot.empty) {
-            const firstDoc = snapshot.docs[0].data();
-            setAboutData(firstDoc);
-          } else {
-            console.log("Collection about rỗng");
-          }
-        }, (error) => {
-          console.error("Firestore error:", error);
-        });
+  /* LOAD OTHER POSTS */
+  useEffect(() => {
+    const colRef = collection(db, "other");
+    const unsub = onSnapshot(colRef, (snapshot) => {
+      const docs = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setTanManData(docs);
+    });
+    return () => unsub();
+  }, []);
 
-        return () => unsub();
-      }, []);
+  /* LOAD ABOUT */
+  useEffect(() => {
+    const colRef = collection(db, "about");
+    const unsub = onSnapshot(colRef, (snapshot) => {
+      if (!snapshot.empty) {
+        setAboutData(snapshot.docs[0].data());
+      }
+    });
+    return () => unsub();
+  }, []);
+
+  /* LOAD handstand in firestore VIDEO */
+  useEffect(() => {
+    const docNames = [
+      "WarmUp",
+      "FaceToWall",
+      "BackToWall",
+      "ExitHandstand",
+      "FreeHandstand"
+    ];
+    const unsubs = docNames.map(name => {
+      const ref = doc(db, "HandStand", name);
+      return onSnapshot(ref, (snap) => {
+        if (snap.exists()) {
+          setVideos(prev => ({
+            ...prev,
+            [name]: snap.data()
+          }));
+        }
+      });
+    });
+    return () => unsubs.forEach(unsub => unsub());
+  }, []);
+
+  // Add function to convert video link from firebase store
+  function toEmbed(value) {
+    if (!value) return "";
+    // nếu chỉ là video ID
+    if (!value.includes("http")) {
+      return `https://www.youtube.com/embed/${value}`;
+    }
+    // nếu là full youtube link
+    const reg =
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/;
+    const match = value.match(reg);
+    return match
+      ? `https://www.youtube.com/embed/${match[1]}`
+      : value;
+  }
+
   return (
-  <div className="container">
+    <div className="container">
+      <div className="hero">
+        <h1>Banana Learning 🍌</h1>
+      </div>
+      {/* TABS */}
+      <div className="tabs">
 
-    <div className="hero">
-      <h1>Banana Learning 🍌</h1>
-    </div>
+        <button
+          className={tab === "about" ? "active" : ""}
+          onClick={() => setTab("about")}
+        >
+          Giới thiệu
+        </button>
 
-    <div className="tabs">
-      <button
-        className={tab === "about" ? "active" : ""}
-        onClick={() => setTab("about")}
-      >
-        Giới thiệu
-      </button>
+        <button
+          className={tab === "exercise" ? "active" : ""}
+          onClick={() => setTab("exercise")}
+        >
+          Bài tập
+        </button>
 
-      <button
-        className={tab === "exercise" ? "active" : ""}
-        onClick={() => setTab("exercise")}
-      >
-        Bài tập
-      </button>
+        <button
+          className={tab === "software" ? "active" : ""}
+          onClick={() => setTab("software")}
+        >
+          Phần mềm
+        </button>
 
-      <button
-        className={tab === "software" ? "active" : ""}
-        onClick={() => setTab("software")}
-      >
-        Phần mềm
-      </button>
+        <button
+          className={tab === "tip" ? "active" : ""}
+          onClick={() => setTab("tip")}
+        >
+          Mẹo tập
+        </button>
 
-      <button
-        className={tab === "tip" ? "active" : ""}
-        onClick={() => setTab("tip")}
-      >
-        Mẹo tập
-      </button>
+        <button
+          className={tab === "other" ? "active" : ""}
+          onClick={() => setTab("other")}
+        >
+          Tản mạn
+        </button>
+      </div>
 
-      <button
-        className={tab === "other" ? "active" : ""}
-        onClick={() => setTab("other")}
-      >
-        Tản mạn
-      </button>
-
-    </div>
-
-    <div className="content">
-        {/* 🔹 ABOUT TAB */}
+      <div className="content">
+        {/* ABOUT */}
         {tab === "about" && (
           <>
             {aboutData ? (
               <>
                 <h2>{aboutData.title}</h2>
-                  <div className="about-content">
-                    {aboutData.content.split("\n").map((paragraph, index) =>
-                      paragraph.trim() === "" ? (
-                        <br key={index} />
-                      ) : (
-                        <p key={index}>{paragraph}</p>
-                      )
-                    )}
-                  </div>
+                <div className="about-content">
+                  {aboutData.content.split("\n").map((p, i) =>
+                    p.trim() === ""
+                      ? <br key={i}/>
+                      : <p key={i}>{p}</p>
+                  )}
+                </div>
               </>
             ) : (
               <p>Đang tải dữ liệu...</p>
@@ -115,100 +141,111 @@ useEffect(() => {
           </>
         )}
 
-      {tab === "exercise" && (
-        <>
-          <h2>Bài tập mọi nơi mọi lúc</h2>
+        {/* EXERCISE */}
+        {tab === "exercise" && (
+          <>
+            <h2>Bài tập mọi nơi mọi lúc</h2>
             <p>🔥 Bài tập 1: Làm nóng cơ thể</p>
             <p>🦵 Bài tập 2: Thân dưới</p>
             <p>🎯 Bài tập 3: Thân giữa</p>
             <p>💪 Bài tập 4: Thân trên</p>
-          <h2>Bài tập cho trồng chuối tự do</h2>
-            <p>🔥 Bài tập 1: Làm nóng khớp</p>
-            <p>🧱 Bài tập 2: Mặt đối diện tường</p>
+
+            <h2>Bài tập cho trồng chuối tự do</h2>
+
+            <div className="exercise-card">
+              <h3>🔥 Bài tập 1: Làm nóng khớp</h3>
+              <div className="video-container">
+                {/* desktop */}
+                <iframe
+                  className="video-landscape"
+                  src={toEmbed(videos.WarmUp?.VideoLandScreen)}
+                  allowFullScreen
+                />
+                {/* mobile */}
+                <iframe
+                  className="video-portrait"
+                  src={toEmbed(videos.WarmUp?.VideoPortraitScreen)}
+                  allowFullScreen
+                />
+              </div>
+            </div>
+
+            <h3>🧱 Bài tập 2: Mặt đối diện tường</h3>
+                <div className="video-container">
+                {/* desktop */}
+                <iframe
+                  className="video-landscape"
+                  src={toEmbed(videos.FaceToWall?.VideoLandScreen)}
+                  allowFullScreen
+                />
+                {/* mobile */}
+                <iframe
+                  className="video-portrait"
+                  src={toEmbed(videos.FaceToWall?.VideoPortraitScreen)}
+                  allowFullScreen
+                />
+              </div>
+
             <p>🧱 Bài tập 3: Lưng đối diện tường</p>
             <p>🤸 Bài tập 4: Thoát trồng chuối</p>
             <p>🎯 Bài tập 5: Trồng chuối tự do</p>
-        </>        
-      )}
-
-      {tab === "software" && (
-        <>
-          <h2>Phần mềm</h2>
-          <p>Quét QR để tải app học trồng chuối.</p>
-        </>
-      )}
-
-      {tab === "tip" && (
-        <>
-          <h2>Mẹo</h2>
-          <p>🔥 Số 1: Tập dẻo vai khi đi công tác</p>
-        </>
-      )}
-            
- {tab === "other" && (
-  <>
-    <h2>Tản mạn</h2>
-    {tanManData.length > 0 ? (
-      tanManData
-        .sort((a, b) => {
-          const indexA = a.index || 0;
-          const indexB = b.index || 0;
-          return Number(indexA) - Number(indexB);
-        })
-        .map((post) => {
-          const isExpanded = expandedId === post.id;
-          const displayContent = post.content || post['1'];
-          const displayTitle = post.title || `Bài viết số ${post.index || ""}`;
-
-          return (
-            <div key={post.id} className="post-item" style={{ marginBottom: '15px', border: '1px solid #eee', borderRadius: '8px', overflow: 'hidden' }}>
-              {/* Tiêu đề: Click vào đây để đóng/mở */}
-              <div 
-                onClick={() => setExpandedId(isExpanded ? null : post.id)}
-                style={{ 
-                  padding: '15px', 
-                  backgroundColor: isExpanded ? '#e8f5e9' : '#f9f9f9', 
-                  cursor: 'pointer',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  fontWeight: 'bold',
-                  color: isExpanded ? '#2e7d32' : '#333',
-                  transition: '0.3s'
-                }}
-              >
-                <span>{displayTitle}</span>
-                <span>{isExpanded ? '▲' : '▼'}</span>
-              </div>
-
-              {/* Nội dung: Chỉ hiển thị khi ID khớp với expandedId */}
-              {isExpanded && (
-                <div style={{ 
-                  padding: '20px', 
-                  backgroundColor: '#fff', 
-                  lineHeight: '1.6',
-                  borderTop: '1px solid #eee',
-                  animation: 'fadeIn 0.3s' 
-                }}>
-                  <p style={{ whiteSpace: 'pre-line', margin: 0 }}>
-                    {displayContent}
-                  </p>
-                </div>
-              )}
-            </div>
-          );
-        })
-    ) : (
-      <p>Đang tải dữ liệu từ Firestore...</p>
-    )}
-  </>
-)}
-
+          </>
+        )}
+        {/* SOFTWARE */}
+        {tab === "software" && (
+          <>
+            <h2>Phần mềm</h2>
+            <p>Quét QR để tải app học trồng chuối.</p>
+          </>
+        )}
+        {/* TIP */}
+        {tab === "tip" && (
+          <>
+            <h2>Mẹo</h2>
+            <p>🔥 Số 1: Tập dẻo vai khi đi công tác</p>
+          </>
+        )}
+        {/* OTHER */}
+        {tab === "other" && (
+          <>
+            <h2>Tản mạn</h2>
+            {tanManData.length > 0 ? (
+              tanManData
+              .sort((a,b)=>(a.index||0)-(b.index||0))
+              .map(post=>{
+                const isExpanded = expandedId === post.id;
+                return (
+                  <div key={post.id} className="post-item">
+                    <div
+                      onClick={() =>
+                        setExpandedId(isExpanded ? null : post.id)
+                      }
+                      className="post-header"
+                    >
+                        <span>{post.title}</span>
+                        <span className={`arrow ${isExpanded ? "open" : ""}`}>
+                          ▼
+                        </span>
+                    </div>
+                    {isExpanded && (
+                      <div style={{
+                        padding:20,
+                        whiteSpace:"pre-line"
+                      }}>
+                        {post.content}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
+            ) : (
+              <p>Đang tải dữ liệu...</p>
+            )}
+          </>
+        )}
+      </div>
     </div>
-
-  </div>
-);
-
+  );
 }
 
 export default App;
