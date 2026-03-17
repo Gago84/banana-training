@@ -204,8 +204,50 @@ function App() {
               </div>
 
             <p>🧱 Bài tập 3: Lưng đối diện tường</p>
+              <div className="video-container">
+                {/* desktop */}
+                <iframe
+                  className="video-landscape"
+                  src={toEmbed(videos.BackToWall?.VideoLandScreen)}
+                  allowFullScreen
+                />
+                {/* mobile */}
+                <iframe
+                  className="video-portrait"
+                  src={toEmbed(videos.BackToWall?.VideoPortraitScreen)}
+                  allowFullScreen
+                />
+              </div>
             <p>🤸 Bài tập 4: Thoát trồng chuối</p>
+              <div className="video-container">
+                {/* desktop */}
+                <iframe
+                  className="video-landscape"
+                  src={toEmbed(videos.ExitHandstand?.VideoLandScreen)}
+                  allowFullScreen
+                />
+                {/* mobile */}
+                <iframe
+                  className="video-portrait"
+                  src={toEmbed(videos.ExitHandstand?.VideoPortraitScreen)}
+                  allowFullScreen
+                />
+              </div>
             <p>🎯 Bài tập 5: Trồng chuối tự do</p>
+              <div className="video-container">
+                {/* desktop */}
+                <iframe
+                  className="video-landscape"
+                  src={toEmbed(videos.FreeHandstand?.VideoLandScreen)}
+                  allowFullScreen
+                />
+                {/* mobile */}
+                <iframe
+                  className="video-portrait"
+                  src={toEmbed(videos.FreeHandstand?.VideoPortraitScreen)}
+                  allowFullScreen
+                />
+              </div>
           </>
         )}
         {/* SOFTWARE */}
