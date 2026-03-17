@@ -9,7 +9,8 @@ function App() {
   const [tab, setTab] = useState("about");
   const [tanManData, setTanManData] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
-
+  // Đặt thêm language state
+  const [lang, setLang] = useState("vi");
   // Thêm state để lưu video
   const [videos, setVideos] = useState({});
 
@@ -79,45 +80,54 @@ function App() {
   return (
     <div className="container">
       <div className="hero">
-        <h1>Banana Learning 🍌</h1>
+        <h1>{lang==="vi" ? "Trồng chuối bằng tay" : "Handstand Training"}</h1>
       </div>
+      {/* Add language button */}
+      <div className="lang-switch">
+        <button
+          className={lang==="vi"?"active":""}
+          onClick={()=>setLang("vi")}
+        >
+          VI
+        </button>
+        <button
+          className={lang==="en"?"active":""}
+          onClick={()=>setLang("en")}
+        >
+          EN
+        </button>
+    </div>
       {/* TABS */}
       <div className="tabs">
 
         <button
-          className={tab === "about" ? "active" : ""}
+          className={tab==="about" ? "active" : ""}
           onClick={() => setTab("about")}
         >
-          Giới thiệu
+          {lang==="vi"?"Giới thiệu":"About"}
         </button>
 
         <button
-          className={tab === "exercise" ? "active" : ""}
+          className={tab==="exercise" ? "active" : ""}
           onClick={() => setTab("exercise")}
         >
-          Bài tập
+          {lang==="vi"?"Bài tập":"Exercises"}
         </button>
 
         <button
-          className={tab === "software" ? "active" : ""}
-          onClick={() => setTab("software")}
-        >
-          Phần mềm
-        </button>
-
-        <button
-          className={tab === "tip" ? "active" : ""}
+          className={tab==="tip" ? "active" : ""}
           onClick={() => setTab("tip")}
         >
-          Mẹo tập
+          {lang==="vi"?"Mẹo tập":"Tips"}
         </button>
 
         <button
-          className={tab === "other" ? "active" : ""}
+          className={tab==="other" ? "active" : ""}
           onClick={() => setTab("other")}
         >
-          Tản mạn
+          {lang==="vi"?"Tản mạn":"Notes"}
         </button>
+
       </div>
 
       <div className="content">
@@ -126,10 +136,17 @@ function App() {
           <>
             {aboutData ? (
               <>
-                <h2>{aboutData.title}</h2>
+                <h2>
+                  {lang==="vi"
+                    ? aboutData.title_vi
+                    : aboutData.title_en}
+                </h2>
                 <div className="about-content">
-                  {aboutData.content.split("\n").map((p, i) =>
-                    p.trim() === ""
+                  {(lang==="vi"
+                    ? aboutData.content_vi
+                    : aboutData.content_en
+                  ).split("\n").map((p,i)=>
+                    p.trim()===""
                       ? <br key={i}/>
                       : <p key={i}>{p}</p>
                   )}

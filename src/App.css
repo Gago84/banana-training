@@ -29,17 +29,37 @@ body {
   margin-bottom: 30px;
 }
 
-.hero::after {
-  content: "";
+/* language buttons wrapper */
+.lang-switch {
   position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.35);
+  top: 15px;
+
+  /* KEY: align with container center */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 900px;
+
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 15px;
+  box-sizing: border-box;
 }
 
-.hero h1 {
-  position: relative;
-  z-index: 1;
-  font-size: clamp(28px, 5vw, 48px);
+/* buttons */
+.lang-switch button {
+  border: none;
+  padding: 6px 10px;
+  margin-left: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(2, 0, 0, 0.85);
+  font-weight: bold;
+}
+
+.lang-switch button.active {
+  background: #4CAF50;
+  color: white;
 }
 
 /* TABS */
