@@ -10,7 +10,7 @@ function App() {
   const [tanManData, setTanManData] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   // Đặt thêm language state
-  const [lang, setLang] = useState("vi");
+  const [lang, setLang] = useState("en");
   // Thêm state để lưu video
   const [videos, setVideos] = useState({});
 
@@ -79,9 +79,12 @@ function App() {
 
   return (
     <div className="container">
+
+      {/* Title */}
       <div className="hero">
         <h1>{lang==="vi" ? "Trồng chuối bằng tay" : "Handstand Training"}</h1>
       </div>
+
       {/* Add language button */}
       <div className="lang-switch">
         <button
@@ -96,7 +99,8 @@ function App() {
         >
           EN
         </button>
-    </div>
+      </div>
+
       {/* TABS */}
       <div className="tabs">
 
@@ -131,6 +135,7 @@ function App() {
       </div>
 
       <div className="content">
+
         {/* ABOUT */}
         {tab === "about" && (
           <>
@@ -153,7 +158,7 @@ function App() {
                 </div>
               </>
             ) : (
-              <p>Đang tải dữ liệu...</p>
+              <p>Loading data...</p>
             )}
           </>
         )}
@@ -161,95 +166,136 @@ function App() {
         {/* EXERCISE */}
         {tab === "exercise" && (
           <>
-            <h2>Bài tập mọi nơi mọi lúc</h2>
-            <p>🔥 Bài tập 1: Làm nóng cơ thể</p>
-            <p>🦵 Bài tập 2: Thân dưới</p>
-            <p>🎯 Bài tập 3: Thân giữa</p>
-            <p>💪 Bài tập 4: Thân trên</p>
+            <h2>
+              {lang === "vi"
+                ? "Bài tập mọi nơi mọi lúc"
+                : "Train Anywhere, Anytime & No Equipment Needed"}
+            </h2>
 
-            <h2>Bài tập cho trồng chuối tự do</h2>
+            <p>
+              🔥 {lang === "vi"
+                ? "Bài tập 1: Làm nóng cơ thể"
+                : "Exercise 1: Warm up your body"}
+            </p>
 
-            <div className="exercise-card">
-              <h3>🔥 Bài tập 1: Làm nóng khớp</h3>
-              <div className="video-container">
-                {/* desktop */}
-                <iframe
-                  className="video-landscape"
-                  src={toEmbed(videos.WarmUp?.VideoLandScreen)}
-                  allowFullScreen
-                />
-                {/* mobile */}
-                <iframe
-                  className="video-portrait"
-                  src={toEmbed(videos.WarmUp?.VideoPortraitScreen)}
-                  allowFullScreen
-                />
-              </div>
+            <p>
+              🦵 {lang === "vi"
+                ? "Bài tập 2: Thân dưới"
+                : "Exercise 2: Lower body"}
+            </p>
+
+            <p>
+              🎯 {lang === "vi"
+                ? "Bài tập 3: Thân giữa"
+                : "Exercise 3: Core"}
+            </p>
+
+            <p>
+              💪 {lang === "vi"
+                ? "Bài tập 4: Thân trên"
+                : "Exercise 4: Upper body"}
+            </p>
+
+      <h2>
+        {lang === "vi"
+          ? "Bài tập cho trồng chuối tự do"
+          : "Exercises for Free Handstand"}
+      </h2>
+
+      <div className="exercise-card">
+        <h3>
+          🔥 {lang === "vi"
+            ? "Bài tập 1: Làm nóng khớp"
+            : "Exercise 1: Joint Warm-up"}
+        </h3>
+
+        <div className="video-container">
+          <iframe
+            className="video-landscape"
+            src={toEmbed(videos.WarmUp?.VideoLandScreen)}
+            allowFullScreen
+          />
+          <iframe
+            className="video-portrait"
+            src={toEmbed(videos.WarmUp?.VideoPortraitScreen)}
+            allowFullScreen
+          />
+        </div>
+      </div>
+
+      <h3>
+        🧱 {lang === "vi"
+          ? "Bài tập 2: Mặt đối diện tường"
+          : "Exercise 2: Face to Wall"}
+      </h3>
+      <div className="video-container">
+        <iframe
+          className="video-landscape"
+          src={toEmbed(videos.FaceToWall?.VideoLandScreen)}
+          allowFullScreen
+        />
+        <iframe
+          className="video-portrait"
+          src={toEmbed(videos.FaceToWall?.VideoPortraitScreen)}
+          allowFullScreen
+        />
+      </div>
+            <p>
+              🧱 {lang === "vi"
+                ? "Bài tập 3: Lưng đối diện tường"
+                : "Exercise 3: Back to Wall"}
+            </p>
+            <div className="video-container">
+              <iframe
+                className="video-landscape"
+                src={toEmbed(videos.BackToWall?.VideoLandScreen)}
+                allowFullScreen
+              />
+              <iframe
+                className="video-portrait"
+                src={toEmbed(videos.BackToWall?.VideoPortraitScreen)}
+                allowFullScreen
+              />
             </div>
 
-            <h3>🧱 Bài tập 2: Mặt đối diện tường</h3>
-                <div className="video-container">
-                {/* desktop */}
-                <iframe
-                  className="video-landscape"
-                  src={toEmbed(videos.FaceToWall?.VideoLandScreen)}
-                  allowFullScreen
-                />
-                {/* mobile */}
-                <iframe
-                  className="video-portrait"
-                  src={toEmbed(videos.FaceToWall?.VideoPortraitScreen)}
-                  allowFullScreen
-                />
-              </div>
+            <p>
+              🤸 {lang === "vi"
+                ? "Bài tập 4: Thoát trồng chuối"
+                : "Exercise 4: Safe Exit"}
+            </p>
+            <div className="video-container">
+              <iframe
+                className="video-landscape"
+                src={toEmbed(videos.ExitHandstand?.VideoLandScreen)}
+                allowFullScreen
+              />
+              <iframe
+                className="video-portrait"
+                src={toEmbed(videos.ExitHandstand?.VideoPortraitScreen)}
+                allowFullScreen
+              />
+            </div>
 
-            <p>🧱 Bài tập 3: Lưng đối diện tường</p>
-              <div className="video-container">
-                {/* desktop */}
-                <iframe
-                  className="video-landscape"
-                  src={toEmbed(videos.BackToWall?.VideoLandScreen)}
-                  allowFullScreen
-                />
-                {/* mobile */}
-                <iframe
-                  className="video-portrait"
-                  src={toEmbed(videos.BackToWall?.VideoPortraitScreen)}
-                  allowFullScreen
-                />
-              </div>
-            <p>🤸 Bài tập 4: Thoát trồng chuối</p>
-              <div className="video-container">
-                {/* desktop */}
-                <iframe
-                  className="video-landscape"
-                  src={toEmbed(videos.ExitHandstand?.VideoLandScreen)}
-                  allowFullScreen
-                />
-                {/* mobile */}
-                <iframe
-                  className="video-portrait"
-                  src={toEmbed(videos.ExitHandstand?.VideoPortraitScreen)}
-                  allowFullScreen
-                />
-              </div>
-            <p>🎯 Bài tập 5: Trồng chuối tự do</p>
-              <div className="video-container">
-                {/* desktop */}
-                <iframe
-                  className="video-landscape"
-                  src={toEmbed(videos.FreeHandstand?.VideoLandScreen)}
-                  allowFullScreen
-                />
-                {/* mobile */}
-                <iframe
-                  className="video-portrait"
-                  src={toEmbed(videos.FreeHandstand?.VideoPortraitScreen)}
-                  allowFullScreen
-                />
-              </div>
+            <p>
+              🎯 {lang === "vi"
+                ? "Bài tập 5: Trồng chuối tự do"
+                : "Exercise 5: Free Handstand"}
+            </p>
+            <div className="video-container">
+              <iframe
+                className="video-landscape"
+                src={toEmbed(videos.FreeHandstand?.VideoLandScreen)}
+                allowFullScreen
+              />
+              <iframe
+                className="video-portrait"
+                src={toEmbed(videos.FreeHandstand?.VideoPortraitScreen)}
+                allowFullScreen
+              />
+            </div>
           </>
         )}
+
         {/* SOFTWARE */}
         {tab === "software" && (
           <>
@@ -257,6 +303,7 @@ function App() {
             <p>Quét QR để tải app học trồng chuối.</p>
           </>
         )}
+
         {/* TIP */}
         {tab === "tip" && (
           <>
@@ -264,6 +311,7 @@ function App() {
             <p>🔥 Số 1: Tập dẻo vai khi đi công tác</p>
           </>
         )}
+        
         {/* OTHER */}
         {tab === "other" && (
           <>

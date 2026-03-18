@@ -83,6 +83,7 @@ body {
   background: #f1f1f1;   /* light gray */
   color: #333;           /* dark text */
   font-weight: 600;
+  font-size: 18px;
   transition: 0.2s;
 }
 
@@ -188,6 +189,9 @@ body {
 
   .tabs {
     margin-top: -25px;
+  }
+  .tabs button {
+    font-size: 20px;
   }
 }
 /* VIDEO CONTAINER */
