@@ -126,6 +126,13 @@ function App() {
         </button>
 
         <button
+          className={tab==="software" ? "active" : ""}
+          onClick={() => setTab("software")}
+        >
+          {lang==="vi" ? "Phần mềm" : "Software"}
+        </button>
+
+        <button
           className={tab==="other" ? "active" : ""}
           onClick={() => setTab("other")}
         >
@@ -299,23 +306,39 @@ function App() {
         {/* SOFTWARE */}
         {tab === "software" && (
           <>
-            <h2>Phần mềm</h2>
-            <p>Quét QR để tải app học trồng chuối.</p>
+            <h2>
+              {lang === "vi" ? "Phần mềm" : "Software"}
+            </h2>
+
+            <p>
+              {lang === "vi"
+                ? "Quét QR để tải app học trồng chuối."
+                : "Scan the QR code to download the handstand training app."}
+            </p>
           </>
         )}
 
         {/* TIP */}
         {tab === "tip" && (
           <>
-            <h2>Mẹo</h2>
-            <p>🔥 Số 1: Tập dẻo vai khi đi công tác</p>
+            <h2>
+              {lang === "vi" ? "Mẹo" : "Tips"}
+            </h2>
+
+            <p>
+              🔥 {lang === "vi"
+                ? "Số 1: Tập dẻo vai khi đi công tác"
+                : "Tip 1: Improve shoulder flexibility while traveling"}
+            </p>
           </>
         )}
-        
+
         {/* OTHER */}
         {tab === "other" && (
           <>
-            <h2>Tản mạn</h2>
+            <h2>
+              {lang === "vi" ? "Tản mạn" : "Articles"}
+            </h2>
             {tanManData.length > 0 ? (
               tanManData
               .sort((a,b)=>(a.index||0)-(b.index||0))
@@ -329,7 +352,9 @@ function App() {
                       }
                       className="post-header"
                     >
-                        <span>{post.title}</span>
+                        <span>
+                          {lang === "vi" ? post.title_vi : post.title_en}
+                        </span>
                         <span className={`arrow ${isExpanded ? "open" : ""}`}>
                           ▼
                         </span>
@@ -339,14 +364,14 @@ function App() {
                         padding:20,
                         whiteSpace:"pre-line"
                       }}>
-                        {post.content}
+                        {lang === "vi" ? post.content_vi : post.content_en}
                       </div>
                     )}
                   </div>
                 );
               })
             ) : (
-              <p>Đang tải dữ liệu...</p>
+              <p>Loading data...</p>
             )}
           </>
         )}
