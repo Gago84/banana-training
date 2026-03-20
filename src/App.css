@@ -65,10 +65,15 @@ body {
 /* TABS */
 .tabs {
   display: flex;
+
+  overflow-x: auto; /* 👈 phải nằm ngoài */
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  gap: 8px;
+
   max-width: 600px;
   margin: -25px auto 0;
   border-radius: 12px;
-  overflow: hidden;
   background: white;
   box-shadow: 0 8px 20px rgba(0,0,0,0.15);
   position: relative;
@@ -76,15 +81,16 @@ body {
 }
 
 .tabs button {
-  flex: 1;
+  flex: 0 0 auto;   /* 👈 QUAN TRỌNG */
+  white-space: nowrap;
+
   padding: 14px;
   border: none;
   cursor: pointer;
-  background: #f1f1f1;   /* light gray */
-  color: #333;           /* dark text */
+  background: #f1f1f1;
+  color: #333;
   font-weight: 600;
   font-size: 18px;
-  transition: 0.2s;
 }
 
 .tabs button.active {
@@ -172,6 +178,8 @@ body {
 .post-header .arrow.open{
   transform:rotate(180deg);
 }
+
+
 /* Stop here for list down mark tan man writing*/
 
 /* DESKTOP IMPROVEMENTS */
