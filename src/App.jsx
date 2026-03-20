@@ -80,66 +80,66 @@ function App() {
   return (
     <div className="container">
 
-      {/* Title */}
-      <div className="hero">
-        <h1>{lang==="vi" ? "Trồng chuối bằng tay" : "Handstand Training"}</h1>
-      </div>
+        {/* Title */}
+        <div className="hero">
+          <h1>{lang==="vi" ? "Trồng chuối bằng tay" : "Handstand Training"}</h1>
+        </div>
 
-      {/* Add language button */}
-      <div className="lang-switch">
-        <button
-          className={lang==="vi"?"active":""}
-          onClick={()=>setLang("vi")}
-        >
-          VI
-        </button>
-        <button
-          className={lang==="en"?"active":""}
-          onClick={()=>setLang("en")}
-        >
-          EN
-        </button>
-      </div>
+        {/* Add language button */}
+        <div className="lang-switch">
+          <button
+            className={lang==="vi"?"active":""}
+            onClick={()=>setLang("vi")}
+          >
+            VI
+          </button>
+          <button
+            className={lang==="en"?"active":""}
+            onClick={()=>setLang("en")}
+          >
+            EN
+          </button>
+        </div>
 
-      {/* TABS */}
-      <div className="tabs">
+        {/* TABS */}
+        <div className="tabs">
 
-        <button
-          className={tab==="about" ? "active" : ""}
-          onClick={() => setTab("about")}
-        >
-          {lang==="vi"?"Giới thiệu":"About"}
-        </button>
+          <button
+            className={tab==="about" ? "active" : ""}
+            onClick={() => setTab("about")}
+          >
+            {lang==="vi"?"Giới thiệu":"About"}
+          </button>
 
-        <button
-          className={tab==="exercise" ? "active" : ""}
-          onClick={() => setTab("exercise")}
-        >
-          {lang==="vi"?"Bài tập":"Exercises"}
-        </button>
+          <button
+            className={tab==="exercise" ? "active" : ""}
+            onClick={() => setTab("exercise")}
+          >
+            {lang==="vi"?"Bài tập":"Exercises"}
+          </button>
 
-        <button
-          className={tab==="tip" ? "active" : ""}
-          onClick={() => setTab("tip")}
-        >
-          {lang==="vi"?"Mẹo tập":"Tips"}
-        </button>
+          <button
+            className={tab==="tip" ? "active" : ""}
+            onClick={() => setTab("tip")}
+          >
+            {lang==="vi"?"Mẹo tập":"Tips"}
+          </button>
 
-        <button
-          className={tab==="software" ? "active" : ""}
-          onClick={() => setTab("software")}
-        >
-          {lang==="vi" ? "Phần mềm" : "Software"}
-        </button>
+          <button
+            className={tab==="software" ? "active" : ""}
+            onClick={() => setTab("software")}
+          >
+            {lang==="vi" ? "Phần mềm" : "Software"}
+          </button>
 
-        <button
-          className={tab==="other" ? "active" : ""}
-          onClick={() => setTab("other")}
-        >
-          {lang==="vi"?"Tản mạn":"Notes"}
-        </button>
+          <button
+            className={tab==="other" ? "active" : ""}
+            onClick={() => setTab("other")}
+          >
+            {lang==="vi"?"Tản mạn":"Notes"}
+          </button>
 
-      </div>
+        </div>
 
       <div className="content">
 
@@ -385,6 +385,28 @@ function App() {
           </>
         )}
       </div>
+
+      {/* 🔥 ADD HERE: Privacy Policy Footer */}
+      <div
+        style={{
+          marginTop: 40,
+          padding: 20,
+          textAlign: "center",
+          fontSize: 14,
+          color: "#666",
+          borderTop: "1px solid #eee"
+        }}
+      >
+        <a
+          href="https://banana-57559.web.app/privacy.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: "#007AFF", textDecoration: "none" }}
+        >
+          {lang === "vi" ? "Chính sách bảo mật" : "Privacy Policy"}
+        </a>
+      </div>
+
     </div>
   );
 }
