@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { db } from "./firebase/config";
 import { collection, onSnapshot, doc } from "firebase/firestore";
+import qrCodeAndroid from "./assets/QRcode-android.svg";
 import "./App.css";
 
 function App() {
@@ -324,6 +325,52 @@ function App() {
                 ? "Quét QR để tải app học trồng chuối."
                 : "Scan the QR code to download the handstand training app."}
             </p>
+
+            <div className="software-grid">
+              <section className="software-column">
+                <h3 className="software-column-title">
+                  {lang === "vi" ? "Android - Google Play" : "Android - Google Play"}
+                </h3>
+
+                <div className="software-qr">
+                  <a
+                    href="https://play.google.com/store/apps/details?id=com.giang.handstandtrainer"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={lang === "vi" ? "Tải ứng dụng Android" : "Download the Android app"}
+                  >
+                    <img
+                      src={qrCodeAndroid}
+                      alt={lang === "vi" ? "Mã QR tải ứng dụng Android" : "QR code to download the Android app"}
+                    />
+                  </a>
+                </div>
+
+                <p className="software-note">
+                  {lang === "vi"
+                    ? "Mã QR này mở trang Google Play để tải ứng dụng Handstand Training trên điện thoại Android."
+                    : "This QR code opens the Google Play page to install the Handstand Training app on Android."}
+                </p>
+              </section>
+
+              <section className="software-column software-column-placeholder">
+                <h3 className="software-column-title">
+                  {lang === "vi" ? "iPhone - App Store" : "iPhone - App Store"}
+                </h3>
+
+                <div className="software-placeholder-box">
+                  <span>
+                    {lang === "vi" ? "Dành chỗ cho mã QR App Store" : "Reserved for the App Store QR code"}
+                  </span>
+                </div>
+
+                <p className="software-note">
+                  {lang === "vi"
+                    ? "Cột bên phải sẽ dùng cho mã QR tải ứng dụng trên iPhone sau."
+                    : "The right column is reserved for the future iPhone App Store QR code."}
+                </p>
+              </section>
+            </div>
           </>
         )}
 
