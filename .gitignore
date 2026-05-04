@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Firebase admin credentials
+import/serviceAccountKey.json
+import/data.json
