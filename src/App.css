@@ -69,7 +69,7 @@ body {
   gap: 10px;
   width: fit-content;
   max-width: min(680px, calc(100% - 32px));
-  margin: -42px auto 0;
+  margin: 16px auto 0;
   padding: 8px;
   border-radius: 18px;
   background: white;
@@ -157,6 +157,112 @@ body {
   margin-bottom: 12px;
 }
 
+.content-section {
+  margin-bottom: 42px;
+}
+
+.content-section h2 {
+  margin-bottom: 8px;
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.info-card,
+.program-card {
+  padding: 18px;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  background: #fcfcfc;
+}
+
+.info-card h3,
+.program-card h3,
+.exercise-card h4 {
+  margin-top: 0;
+}
+
+.exercise-group {
+  margin-top: 26px;
+}
+
+.empty-note {
+  color: #777;
+  font-style: italic;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+
+.meta-row span {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #eef6ef;
+  color: #245c2a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.content-image {
+  width: 100%;
+  max-height: none;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+}
+
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.program-card {
+  margin-bottom: 20px;
+}
+
+.program-list {
+  padding-left: 24px;
+}
+
+.program-list li {
+  margin-bottom: 12px;
+}
+
+.program-list span {
+  display: block;
+  color: #666;
+  font-size: 15px;
+}
+
+.post-content {
+  padding: 20px;
+  white-space: pre-line;
+}
+
+.footer {
+  margin-top: 40px;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  border-top: 1px solid #eee;
+}
+
+.footer a {
+  color: #007aff;
+  text-decoration: none;
+}
+
 /* Add style for list down mark tan man writing */
 .post-header {
   padding: 16px 18px;
@@ -209,7 +315,7 @@ body {
   }
 
   .tabs {
-    margin-top: -42px;
+    margin-top: 0px;
   }
 
   .tabs button {
@@ -247,7 +353,7 @@ body {
   .tabs {
     width: auto;
     max-width: calc(100% - 24px);
-    margin-top: -34px;
+    margin-top: 14px;
     padding: 6px;
     gap: 6px;
     justify-content: flex-start;
@@ -341,6 +447,11 @@ body {
 }
 
 @media (max-width: 767px) {
+  .item-grid,
+  .image-grid {
+    grid-template-columns: 1fr;
+  }
+
   .software-grid {
     grid-template-columns: 1fr;
   }
