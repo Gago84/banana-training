@@ -11,6 +11,7 @@
     "import:firestore": "node import/import.js",
     "import:firestore:assets": "node import/import.js --upload-assets",
     "upload:equipment-image": "node import/import.js --upload-assets-only",
+    "upload:media-assets": "node import/import.js --upload-assets-only",
     "deploy": "npm run build && firebase deploy"
   },
   "dependencies": {

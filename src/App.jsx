@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase/config";
 import qrCodeAndroid from "./assets/QRcode-android.svg";
@@ -7,10 +7,9 @@ import "./App.css";
 const fallbackTabs = [
   { key: "about", index: 1, title_vi: "Gioi thieu", title_en: "About" },
   { key: "exercise", index: 2, title_vi: "Bai tap", title_en: "Exercises" },
-  { key: "programs", index: 3, title_vi: "Lich tap", title_en: "Programs" },
-  { key: "tip", index: 4, title_vi: "Meo tap", title_en: "Tips" },
-  { key: "software", index: 5, title_vi: "Phan mem", title_en: "Software" },
-  { key: "other", index: 6, title_vi: "Tan man", title_en: "Notes" },
+  { key: "tip", index: 3, title_vi: "Meo tap", title_en: "Tips" },
+  { key: "software", index: 4, title_vi: "Phan mem", title_en: "Software" },
+  { key: "other", index: 5, title_vi: "Tan man", title_en: "Notes" },
 ];
 
 function byIndex(a, b) {
@@ -36,6 +35,10 @@ function toEmbed(value) {
   return match ? `https://www.youtube.com/embed/${match[1]}` : value;
 }
 
+function isDirectVideo(value) {
+  return /\.(mp4|webm|ogg)(?:[?#].*)?$/i.test(value || "");
+}
+
 function textBlocks(value) {
   if (!value) return null;
 
@@ -44,9 +47,65 @@ function textBlocks(value) {
   );
 }
 
+const muscleLabels = {
+  abs: "Abs",
+  biceps: "Biceps",
+  calves: "Calf",
+  chest: "Chest",
+  deltoids: "Deltoids",
+  forearm: "Forearm",
+  glute: "Glutes",
+  hamstrings: "Hamstring",
+  lats: "Lats",
+  obliques: "Obliques",
+  quads: "Quad",
+  back: "Back",
+  traps: "Traps",
+  triceps: "Triceps",
+};
+
+const jointLabels = {
+  ankles: "Ankle",
+  elbows: "Elbow",
+  hips: "Hip",
+  knees: "Knee",
+  shoulders: "Shoulder",
+  spine: "Spine",
+  wrists: "Wrist",
+};
+
+function formatImpact(items = [], labels = muscleLabels) {
+  return items
+    .map((item) => labels[item] || item)
+    .filter(Boolean)
+    .join(", ");
+}
+
+function ExerciseImpact({ item, lang }) {
+  const impact =
+    localized(item, "impact", lang) ||
+    formatImpact(item.targetMuscles, muscleLabels) ||
+    formatImpact(item.targetJoints, jointLabels);
+
+  if (!impact) return null;
+
+  return <p className="muscle-impact">{impact}</p>;
+}
+
 function MediaBlock({ item }) {
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const videoRef = useRef(null);
   const landscape = item.videoLandscapeUrl || item.VideoLandScreen || item.videoShortUrl;
   const portrait = item.videoPortraitUrl || item.VideoPortraitScreen;
+  const directVideo = isDirectVideo(landscape);
+
+  useEffect(() => {
+    if (!shouldLoadVideo || !videoRef.current) return;
+
+    videoRef.current.play().catch(() => {
+      // Browser autoplay policy can still block playback in rare cases.
+    });
+  }, [shouldLoadVideo]);
 
   return (
     <>
@@ -55,22 +114,46 @@ function MediaBlock({ item }) {
           className="content-image"
           src={item.imageUrl}
           alt={item.title_en || ""}
+          loading="lazy"
           referrerPolicy="no-referrer"
           onError={() => console.error("Image failed to load:", item.imageUrl)}
         />
       )}
-      {landscape && (
+      {directVideo && !shouldLoadVideo && (
+        <button
+          className="video-load-button"
+          type="button"
+          onClick={() => setShouldLoadVideo(true)}
+        >
+          <span className="video-load-icon" aria-hidden="true">▶</span>
+          <span>{item.title_en || "Play video"}</span>
+        </button>
+      )}
+      {directVideo && shouldLoadVideo && (
+        <video
+          ref={videoRef}
+          className="content-video"
+          src={landscape}
+          controls
+          autoPlay
+          playsInline
+          preload="none"
+        />
+      )}
+      {landscape && !directVideo && (
         <div className="video-container">
           <iframe
             className="video-landscape"
             src={toEmbed(landscape)}
             title={item.title_en || item.id}
+            loading="lazy"
             allowFullScreen
           />
           <iframe
             className="video-portrait"
             src={toEmbed(portrait || landscape)}
             title={`${item.title_en || item.id} portrait`}
+            loading="lazy"
             allowFullScreen
           />
         </div>
@@ -92,16 +175,94 @@ function MetaRow({ item }) {
   return <div className="meta-row">{details.map((detail) => <span key={detail}>{detail}</span>)}</div>;
 }
 
-function ExerciseItem({ item, lang }) {
+function ExerciseItem({ item, lang, showImpact = true }) {
   return (
     <article className="exercise-card">
       <h4>{localized(item, "title", lang)}</h4>
+      {showImpact && <ExerciseImpact item={item} lang={lang} />}
       {localized(item, "description", lang) && (
         <p>{localized(item, "description", lang)}</p>
       )}
-      <MetaRow item={item} />
       <MediaBlock item={item} />
     </article>
+  );
+}
+
+function formatRoutinePrescription(day, lang) {
+  const prescription = day.prescription;
+
+  if (!prescription || typeof prescription !== "object") {
+    return localized(day, "prescription", lang);
+  }
+
+  let text = "";
+
+  if (prescription.set) {
+    text = `${prescription.set} Sets`;
+  }
+
+  if (prescription.rep) {
+    text = `${text} of ${prescription.rep}`.trim();
+  }
+
+  if (prescription.rest) {
+    text = [text, `Rest: ${prescription.rest}`].filter(Boolean).join(", ");
+  }
+
+  return text;
+}
+
+function RoutineTable({ section, lang }) {
+  const days = Array.isArray(section.days) ? section.days.slice().sort(byIndex) : [];
+
+  if (!days.length) return null;
+
+  return (
+    <div className="routine-table-wrap">
+      <table className="routine-table">
+        <caption>{localized(section, "caption", lang) || "Day"}</caption>
+        <thead>
+          <tr>
+            {days.map((day) => (
+              <th key={day.key}>
+                <span className="routine-day">{localized(day, "label", lang)}</span>
+                <strong>{localized(day, "title", lang)}</strong>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            {days.map((day) => (
+              <td key={`${day.key}-items`} className={day.rest ? "routine-rest-cell" : ""}>
+                {day.rest ? (
+                  <span className="routine-rest">{localized(day, "restLabel", lang) || "Rest"}</span>
+                ) : (
+                  <ul>
+                    {(day.items || []).map((item) => (
+                      <li key={`${day.key}-${item}`}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </td>
+            ))}
+          </tr>
+          <tr className="routine-prescription-row">
+            {days.map((day) => (
+              <td key={`${day.key}-prescription`}>
+                {formatRoutinePrescription(day, lang) ? (
+                  <span>{formatRoutinePrescription(day, lang)}</span>
+                ) : day.rest ? (
+                  <span className="routine-rest">{localized(day, "restLabel", lang) || "Rest"}</span>
+                ) : (
+                  <span aria-hidden="true">&nbsp;</span>
+                )}
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -343,16 +504,27 @@ function App() {
               <section className="content-section" key={section.id}>
                 <h2>{localized(section, "title", lang)}</h2>
                 {localized(section, "description", lang) && <p>{localized(section, "description", lang)}</p>}
-                {section.groups.map((group) => (
-                  <div className="exercise-group" key={group.id}>
-                    <h3>{localized(group, "title", lang)}</h3>
-                    {group.items.length > 0 ? (
-                      group.items.map((item) => <ExerciseItem key={item.id} item={item} lang={lang} />)
-                    ) : (
-                      <p className="empty-note">{lang === "vi" ? "Chua co bai tap." : "No exercises yet."}</p>
-                    )}
-                  </div>
-                ))}
+                {section.id === "routine" ? (
+                  <RoutineTable section={section} lang={lang} />
+                ) : (
+                  section.groups.map((group) => (
+                    <div className="exercise-group" key={group.id}>
+                      {!["lowerBody", "core", "coolDown"].includes(section.id) && <h3>{localized(group, "title", lang)}</h3>}
+                      {group.items.length > 0 ? (
+                        group.items.map((item) => (
+                          <ExerciseItem
+                            key={item.id}
+                            item={item}
+                            lang={lang}
+                            showImpact={section.id !== "freeHandstand"}
+                          />
+                        ))
+                      ) : (
+                        <p className="empty-note">{lang === "vi" ? "Chua co bai tap." : "No exercises yet."}</p>
+                      )}
+                    </div>
+                  ))
+                )}
               </section>
             ))}
           </>

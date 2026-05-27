@@ -41,6 +41,447 @@ const assetUploads = [
     ],
     field: "imageUrl",
   },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "WarmUp-JumpJack.mp4",
+    ),
+    storagePath: "exercise/warmup/jumping-jack.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "warmup",
+      "groups",
+      "general",
+      "items",
+      "jumpingJack",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "LowBody-CalfRaise.mp4",
+    ),
+    storagePath: "exercise/lower-body/single-calf-raise.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "lowerBody",
+      "groups",
+      "calves",
+      "items",
+      "singleCalfRaise",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "LowBody-GluteBridge.mp4",
+    ),
+    storagePath: "exercise/lower-body/glute-bridge.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "lowerBody",
+      "groups",
+      "glute",
+      "items",
+      "gluteBridge",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "WarmUp-SkipRun.mp4",
+    ),
+    storagePath: "exercise/warmup/skipping-run.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "warmup",
+      "groups",
+      "general",
+      "items",
+      "skippingRun",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "LowBody-BungarySplit.mp4",
+    ),
+    storagePath: "exercise/lower-body/bungarian-split.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "lowerBody",
+      "groups",
+      "quads",
+      "items",
+      "bungarianSplit",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "Core-HollowRock.mp4",
+    ),
+    storagePath: "exercise/core/hollow-rock.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "core",
+      "groups",
+      "abs",
+      "items",
+      "hollowRock",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "Core-Plank.mp4",
+    ),
+    storagePath: "exercise/core/plank.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "core",
+      "groups",
+      "abs",
+      "items",
+      "plank",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "Core-SidePlank.mp4",
+    ),
+    storagePath: "exercise/core/side-plank.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "core",
+      "groups",
+      "obliques",
+      "items",
+      "sidePlank",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "Core-ArchUp.mp4",
+    ),
+    storagePath: "exercise/core/arch-up.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "core",
+      "groups",
+      "lowerBack",
+      "items",
+      "archUp",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "UpBody-Push-Diamond.mp4",
+    ),
+    storagePath: "exercise/upper-body/push/regular.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "upperBody",
+      "groups",
+      "push",
+      "items",
+      "regular",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "UpBody-Push-Regular.mp4",
+    ),
+    storagePath: "exercise/upper-body/push/diamond.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "upperBody",
+      "groups",
+      "push",
+      "items",
+      "diamond",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "UpBody-Push-Pike.mp4",
+    ),
+    storagePath: "exercise/upper-body/push/pike.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "upperBody",
+      "groups",
+      "push",
+      "items",
+      "pike",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "UpBody-Pull-PullUp.mp4",
+    ),
+    storagePath: "exercise/upper-body/pull/pull-up.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "upperBody",
+      "groups",
+      "pull",
+      "items",
+      "pullUp",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "UpBody-Pull-Row.mp4",
+    ),
+    storagePath: "exercise/upper-body/pull/row.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "upperBody",
+      "groups",
+      "pull",
+      "items",
+      "row",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "UpBody-Pull-ChinUp.mp4",
+    ),
+    storagePath: "exercise/upper-body/pull/chin-up.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "upperBody",
+      "groups",
+      "pull",
+      "items",
+      "chinUp",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "CoolDown-OverHeadRod.mp4",
+    ),
+    storagePath: "exercise/cool-down/overhead-rod.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "coolDown",
+      "groups",
+      "joints",
+      "items",
+      "overheadRod",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "CoolDown-Bridge.mp4",
+    ),
+    storagePath: "exercise/cool-down/bridge.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "coolDown",
+      "groups",
+      "joints",
+      "items",
+      "bridge",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "CoolDown-CatCow.mp4",
+    ),
+    storagePath: "exercise/cool-down/cat-cow.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "coolDown",
+      "groups",
+      "joints",
+      "items",
+      "catCow",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "CoolDown-DownDog.mp4",
+    ),
+    storagePath: "exercise/cool-down/down-dog.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "coolDown",
+      "groups",
+      "joints",
+      "items",
+      "downDog",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "CoolDown-Squat.mp4",
+    ),
+    storagePath: "exercise/cool-down/squat.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "coolDown",
+      "groups",
+      "joints",
+      "items",
+      "squat",
+    ],
+    field: "videoShortUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "CoolDown-Lunge.mp4",
+    ),
+    storagePath: "exercise/cool-down/lunge.mp4",
+    contentType: "video/mp4",
+    documentPath: [
+      "exercises",
+      "coolDown",
+      "groups",
+      "joints",
+      "items",
+      "lunge",
+    ],
+    field: "videoShortUrl",
+  },
 ];
 
 const serviceAccount = JSON.parse(await fs.readFile(serviceAccountPath, "utf8"));
@@ -156,8 +597,8 @@ async function uploadAssetsToStorage() {
   const updates = [];
 
   for (const asset of assetUploads) {
-    const imageUrl = await uploadAsset(asset);
-    if (!imageUrl) continue;
+    const assetUrl = await uploadAsset(asset);
+    if (!assetUrl) continue;
 
     const exportedDocument = findExportedDocument(
       importedData,
@@ -172,9 +613,9 @@ async function uploadAssetsToStorage() {
 
     exportedDocument.data = {
       ...(exportedDocument.data ?? {}),
-      [asset.field]: imageUrl,
+      [asset.field]: assetUrl,
     };
-    updates.push({ asset, imageUrl });
+    updates.push({ asset, assetUrl });
     changed = true;
     console.log(
       `Uploaded ${path.basename(asset.localPath)} and updated ${asset.documentPath.join("/")}.${asset.field}`,
@@ -191,10 +632,10 @@ async function uploadAssetsToStorage() {
 }
 
 async function updateAssetDocuments(updates) {
-  for (const { asset, imageUrl } of updates) {
+  for (const { asset, assetUrl } of updates) {
     const documentRef = db.doc(asset.documentPath.join("/"));
     console.log(`Updating document: ${documentRef.path}`);
-    await documentRef.set({ [asset.field]: imageUrl }, { merge: true });
+    await documentRef.set({ [asset.field]: assetUrl }, { merge: true });
   }
 }
 
