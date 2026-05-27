@@ -8,6 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "export:firestore": "node import/export.js",
+    "import:firestore": "node import/import.js",
+    "import:firestore:assets": "node import/import.js --upload-assets",
+    "upload:equipment-image": "node import/import.js --upload-assets-only",
     "deploy": "npm run build && firebase deploy"
   },
   "dependencies": {

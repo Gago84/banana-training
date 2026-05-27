@@ -5,6 +5,8 @@ import {
   Timestamp,
   getFirestore,
 } from "firebase-admin/firestore";
+import { getStorage } from "firebase-admin/storage";
+import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,6 +17,31 @@ const importDir = path.dirname(__filename);
 const serviceAccountPath = path.join(importDir, "serviceAccountKey.json");
 const inputPath = path.join(importDir, "data.json");
 const shouldOverwrite = process.argv.includes("--overwrite");
+const shouldUploadAssetsOnly = process.argv.includes("--upload-assets-only");
+const shouldUploadAssets =
+  shouldUploadAssetsOnly || process.argv.includes("--upload-assets");
+
+const assetUploads = [
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Equip",
+      "Wall mount pullup bar.jpg",
+    ),
+    storagePath: "exercise/basic-equipment/wall-pullup-bar.jpg",
+    contentType: "image/jpeg",
+    documentPath: [
+      "exerciseIntro",
+      "basicEquipment",
+      "items",
+      "wallPullupBar",
+    ],
+    field: "imageUrl",
+  },
+];
 
 const serviceAccount = JSON.parse(await fs.readFile(serviceAccountPath, "utf8"));
 const importedData = JSON.parse(await fs.readFile(inputPath, "utf8"));
@@ -22,10 +49,12 @@ const importedData = JSON.parse(await fs.readFile(inputPath, "utf8"));
 if (!getApps().length) {
   initializeApp({
     credential: cert(serviceAccount),
+    storageBucket: `${serviceAccount.project_id}.firebasestorage.app`,
   });
 }
 
 const db = getFirestore();
+const bucket = getStorage().bucket();
 
 function deserializeValue(value) {
   if (Array.isArray(value)) {
@@ -69,6 +98,104 @@ function deserializeValue(value) {
 
 function deserializeData(data = {}) {
   return deserializeValue(data);
+}
+
+async function fileExists(filePath) {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function findExportedDocument(data, documentPath) {
+  let documents = data.collections?.[documentPath[0]];
+  let document = null;
+
+  for (let index = 1; index < documentPath.length; index += 2) {
+    const documentId = documentPath[index];
+    document = documents?.find((item) => item.id === documentId);
+
+    if (!document) {
+      return null;
+    }
+
+    const collectionId = documentPath[index + 1];
+    documents = collectionId
+      ? document.subcollections?.[collectionId]
+      : undefined;
+  }
+
+  return document;
+}
+
+async function uploadAsset(asset) {
+  if (!(await fileExists(asset.localPath))) {
+    console.log(`Skipping missing asset: ${asset.localPath}`);
+    return null;
+  }
+
+  const token = crypto.randomUUID();
+  const [uploadedFile] = await bucket.upload(asset.localPath, {
+    destination: asset.storagePath,
+    metadata: {
+      contentType: asset.contentType,
+      metadata: {
+        firebaseStorageDownloadTokens: token,
+      },
+    },
+  });
+
+  const encodedPath = encodeURIComponent(uploadedFile.name);
+  return `https://firebasestorage.googleapis.com/v0/b/${bucket.name}/o/${encodedPath}?alt=media&token=${token}`;
+}
+
+async function uploadAssetsToStorage() {
+  let changed = false;
+  const updates = [];
+
+  for (const asset of assetUploads) {
+    const imageUrl = await uploadAsset(asset);
+    if (!imageUrl) continue;
+
+    const exportedDocument = findExportedDocument(
+      importedData,
+      asset.documentPath,
+    );
+
+    if (!exportedDocument) {
+      throw new Error(
+        `Could not find ${asset.documentPath.join("/")} in import/data.json.`,
+      );
+    }
+
+    exportedDocument.data = {
+      ...(exportedDocument.data ?? {}),
+      [asset.field]: imageUrl,
+    };
+    updates.push({ asset, imageUrl });
+    changed = true;
+    console.log(
+      `Uploaded ${path.basename(asset.localPath)} and updated ${asset.documentPath.join("/")}.${asset.field}`,
+    );
+  }
+
+  if (changed) {
+    importedData.exportedAt = new Date().toISOString();
+    await fs.writeFile(inputPath, `${JSON.stringify(importedData, null, 2)}\n`, "utf8");
+    console.log("Saved uploaded asset URLs to import/data.json.");
+  }
+
+  return updates;
+}
+
+async function updateAssetDocuments(updates) {
+  for (const { asset, imageUrl } of updates) {
+    const documentRef = db.doc(asset.documentPath.join("/"));
+    console.log(`Updating document: ${documentRef.path}`);
+    await documentRef.set({ [asset.field]: imageUrl }, { merge: true });
+  }
 }
 
 async function deleteCollection(collectionRef) {
@@ -134,6 +261,17 @@ async function importFirestore() {
     throw new Error(
       `Project mismatch: data.json is for ${importedData.projectId}, but serviceAccountKey.json is for ${serviceAccount.project_id}.`,
     );
+  }
+
+  if (shouldUploadAssetsOnly) {
+    const updates = await uploadAssetsToStorage();
+    await updateAssetDocuments(updates);
+    console.log("Uploaded assets and updated Firestore documents successfully.");
+    return;
+  }
+
+  if (shouldUploadAssets) {
+    await uploadAssetsToStorage();
   }
 
   if (shouldOverwrite) {
