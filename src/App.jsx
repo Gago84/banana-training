@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase/config";
 import qrCodeAndroid from "./assets/QRcode-android.svg";
+import qrCodeAppleStore from "./assets/QRcode-apple-store.png";
 import "./App.css";
 
 const fallbackTabs = [
@@ -599,15 +600,18 @@ function App() {
                 </p>
               </section>
 
-              <section className="software-column software-column-placeholder">
+              <section className="software-column">
                 <h3 className="software-column-title">iPhone - App Store</h3>
-                <div className="software-placeholder-box">
-                  <span>{lang === "vi" ? "Danh cho ma QR App Store" : "Reserved for the App Store QR code"}</span>
+                <div className="software-qr">
+                  <img
+                    src={qrCodeAppleStore}
+                    alt={lang === "vi" ? "Ma QR tai ung dung iPhone" : "QR code to download the iPhone app"}
+                  />
                 </div>
                 <p className="software-note">
                   {lang === "vi"
-                    ? "Cot ben phai se dung cho ma QR tai ung dung tren iPhone sau."
-                    : "The right column is reserved for the future iPhone App Store QR code."}
+                    ? "Ma QR nay mo trang App Store de tai ung dung Handstand Training tren iPhone."
+                    : "This QR code opens the App Store page to install the Handstand Training app on iPhone."}
                 </p>
               </section>
             </div>
