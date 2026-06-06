@@ -186,6 +186,81 @@ body {
   margin-top: 0;
 }
 
+.requirements-panel {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid #d8e2d9;
+  border-radius: 8px;
+  background: #f7faf7;
+}
+
+.requirements-panel h3 {
+  margin: 0 0 12px;
+  color: #17241a;
+  font-size: 20px;
+}
+
+.requirements-panel h4 {
+  margin: 18px 0 10px;
+  color: #17241a;
+  font-size: 17px;
+}
+
+.requirements-panel dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+}
+
+.requirements-panel div {
+  padding: 12px;
+  border-radius: 8px;
+  background: white;
+}
+
+.requirements-panel dt {
+  margin-bottom: 4px;
+  color: #245c2a;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.requirements-panel dd {
+  margin: 0;
+  color: #17241a;
+  font-weight: 700;
+}
+
+.requirement-exercise-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.requirement-exercise-list li {
+  padding: 12px;
+  border-radius: 8px;
+  background: white;
+}
+
+.requirement-exercise-list strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #245c2a;
+}
+
+.requirement-exercise-list span {
+  display: block;
+  color: #4f5c52;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 .exercise-group {
   margin-top: 26px;
 }
@@ -409,6 +484,14 @@ body {
 
   .content {
     padding-top: 24px;
+  }
+
+  .requirements-panel dl {
+    grid-template-columns: 1fr;
+  }
+
+  .requirement-exercise-list {
+    grid-template-columns: 1fr;
   }
 
   .video-landscape {

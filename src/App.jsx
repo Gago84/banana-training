@@ -189,6 +189,80 @@ function ExerciseItem({ item, lang, showImpact = true }) {
   );
 }
 
+function ExerciseRequirements({ lang }) {
+  const labels =
+    lang === "vi"
+      ? {
+          title: "Yeu cau",
+          woman: "Nu",
+          man: "Nam",
+          womanText: "1 chong day va 1 keo xa",
+          manText: "3 chong day va 3 keo xa",
+          prepTitle: "Bai tap de dat yeu cau",
+          prepExercises: [
+            {
+              title: "Pull up voi resistance band",
+              description: "Dung day de giam tai trong va tap du bien do keo xa.",
+            },
+            {
+              title: "Negative pull up",
+              description: "Nhay len vi tri cam tren xa, sau do ha nguoi cham va co kiem soat.",
+            },
+            {
+              title: "Incline pushup",
+              description: "Chong day voi tay dat tren be mat cao de giam do kho.",
+            },
+          ],
+        }
+      : {
+          title: "Requirements",
+          woman: "Woman",
+          man: "Man",
+          womanText: "1 pushup and 1 pull up",
+          manText: "3 pushups and 3 pull ups",
+          prepTitle: "Exercises to pass the requirements",
+          prepExercises: [
+            {
+              title: "Resistance band pull up",
+              description: "Use the band to reduce bodyweight and practice the full pull-up range.",
+            },
+            {
+              title: "Negative pull up",
+              description: "Start at the top of the pull up, then lower slowly with control.",
+            },
+            {
+              title: "Incline pushup",
+              description: "Place your hands on a raised surface to make pushups easier while building strength.",
+            },
+          ],
+        };
+
+  return (
+    <aside className="requirements-panel" aria-labelledby="exercise-requirements-title">
+      <h3 id="exercise-requirements-title">{labels.title}</h3>
+      <dl>
+        <div>
+          <dt>{labels.woman}</dt>
+          <dd>{labels.womanText}</dd>
+        </div>
+        <div>
+          <dt>{labels.man}</dt>
+          <dd>{labels.manText}</dd>
+        </div>
+      </dl>
+      <h4>{labels.prepTitle}</h4>
+      <ul className="requirement-exercise-list">
+        {labels.prepExercises.map((exercise) => (
+          <li key={exercise.title}>
+            <strong>{exercise.title}</strong>
+            <span>{exercise.description}</span>
+          </li>
+        ))}
+      </ul>
+    </aside>
+  );
+}
+
 function formatRoutinePrescription(day, lang) {
   const prescription = day.prescription;
 
@@ -498,6 +572,7 @@ function App() {
                     </article>
                   ))}
                 </div>
+                {section.id === "basicEquipment" && <ExerciseRequirements lang={lang} />}
               </section>
             ))}
 
