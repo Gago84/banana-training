@@ -189,7 +189,8 @@ function ExerciseItem({ item, lang, showImpact = true }) {
   );
 }
 
-function ExerciseRequirements({ lang }) {
+function ExerciseRequirements({ lang, section }) {
+  const videoUrls = section?.requirementExerciseVideoUrls || {};
   const labels =
     lang === "vi"
       ? {
@@ -201,14 +202,17 @@ function ExerciseRequirements({ lang }) {
           prepTitle: "Bai tap de dat yeu cau",
           prepExercises: [
             {
+              key: "resistanceBandPullUp",
               title: "Pull up voi resistance band",
               description: "Dung day de giam tai trong va tap du bien do keo xa.",
             },
             {
+              key: "negativePullUp",
               title: "Negative pull up",
               description: "Nhay len vi tri cam tren xa, sau do ha nguoi cham va co kiem soat.",
             },
             {
+              key: "inclinePushup",
               title: "Incline pushup",
               description: "Chong day voi tay dat tren be mat cao de giam do kho.",
             },
@@ -223,14 +227,17 @@ function ExerciseRequirements({ lang }) {
           prepTitle: "Exercises to pass the requirements",
           prepExercises: [
             {
+              key: "resistanceBandPullUp",
               title: "Resistance band pull up",
               description: "Use the band to reduce bodyweight and practice the full pull-up range.",
             },
             {
+              key: "negativePullUp",
               title: "Negative pull up",
               description: "Start at the top of the pull up, then lower slowly with control.",
             },
             {
+              key: "inclinePushup",
               title: "Incline pushup",
               description: "Place your hands on a raised surface to make pushups easier while building strength.",
             },
@@ -256,6 +263,12 @@ function ExerciseRequirements({ lang }) {
           <li key={exercise.title}>
             <strong>{exercise.title}</strong>
             <span>{exercise.description}</span>
+            <MediaBlock
+              item={{
+                title_en: exercise.title,
+                videoShortUrl: videoUrls[exercise.key],
+              }}
+            />
           </li>
         ))}
       </ul>
@@ -652,7 +665,7 @@ function App() {
                     </article>
                   ))}
                 </div>
-                {section.id === "basicEquipment" && <ExerciseRequirements lang={lang} />}
+                {section.id === "basicEquipment" && <ExerciseRequirements lang={lang} section={section} />}
               </section>
             ))}
 

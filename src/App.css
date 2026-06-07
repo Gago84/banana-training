@@ -261,6 +261,24 @@ body {
   line-height: 1.45;
 }
 
+.requirement-exercise-list .video-load-button {
+  min-height: 58px;
+  margin: 12px 0 0;
+  border-radius: 8px;
+  gap: 10px;
+}
+
+.requirement-exercise-list .video-load-icon {
+  width: 30px;
+  height: 30px;
+  font-size: 13px;
+}
+
+.requirement-exercise-list .content-video {
+  margin: 12px 0 0;
+  border-radius: 8px;
+}
+
 .exercise-group {
   margin-top: 26px;
 }

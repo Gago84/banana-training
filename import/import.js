@@ -48,6 +48,70 @@ const assetUploads = [
       "src",
       "assets",
       "Video",
+      "Support requirement",
+      "Resistance Band Pull Up.mp4",
+    ),
+    storagePath: "exercise/basic-equipment/requirements/resistance-band-pull-up.mp4",
+    contentType: "video/mp4",
+    documentPath: ["exerciseIntro", "basicEquipment"],
+    fieldPath: ["requirementExerciseVideoUrls", "resistanceBandPullUp"],
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "Support requirement",
+      "Negative Pull Up.mp4",
+    ),
+    storagePath: "exercise/basic-equipment/requirements/negative-pull-up.mp4",
+    contentType: "video/mp4",
+    documentPath: ["exerciseIntro", "basicEquipment"],
+    fieldPath: ["requirementExerciseVideoUrls", "negativePullUp"],
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
+      "Support requirement",
+      "Incline Push Up.mp4",
+    ),
+    storagePath: "exercise/basic-equipment/requirements/incline-push-up.mp4",
+    contentType: "video/mp4",
+    documentPath: ["exerciseIntro", "basicEquipment"],
+    fieldPath: ["requirementExerciseVideoUrls", "inclinePushup"],
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Equip",
+      "Resistance Band.jpg",
+    ),
+    storagePath: "exercise/basic-equipment/resistance-band.jpg",
+    contentType: "image/jpeg",
+    documentPath: [
+      "exerciseIntro",
+      "basicEquipment",
+      "items",
+      "resistanceBand",
+    ],
+    field: "imageUrl",
+  },
+  {
+    localPath: path.join(
+      importDir,
+      "..",
+      "src",
+      "assets",
+      "Video",
       "WarmUp-JumpJack.mp4",
     ),
     storagePath: "exercise/warmup/jumping-jack.mp4",
@@ -571,6 +635,38 @@ function findExportedDocument(data, documentPath) {
   return document;
 }
 
+function getAssetFieldPath(asset) {
+  return asset.fieldPath || [asset.field];
+}
+
+function setNestedField(data, fieldPath, value) {
+  let target = data;
+
+  for (let index = 0; index < fieldPath.length - 1; index += 1) {
+    const field = fieldPath[index];
+
+    if (!target[field] || typeof target[field] !== "object") {
+      target[field] = {};
+    }
+
+    target = target[field];
+  }
+
+  target[fieldPath[fieldPath.length - 1]] = value;
+}
+
+function getNestedUpdate(fieldPath, value) {
+  const [field, ...rest] = fieldPath;
+
+  if (rest.length === 0) {
+    return { [field]: value };
+  }
+
+  return {
+    [field]: getNestedUpdate(rest, value),
+  };
+}
+
 async function uploadAsset(asset) {
   if (!(await fileExists(asset.localPath))) {
     console.log(`Skipping missing asset: ${asset.localPath}`);
@@ -611,14 +707,15 @@ async function uploadAssetsToStorage() {
       );
     }
 
+    const fieldPath = getAssetFieldPath(asset);
     exportedDocument.data = {
       ...(exportedDocument.data ?? {}),
-      [asset.field]: assetUrl,
     };
+    setNestedField(exportedDocument.data, fieldPath, assetUrl);
     updates.push({ asset, assetUrl });
     changed = true;
     console.log(
-      `Uploaded ${path.basename(asset.localPath)} and updated ${asset.documentPath.join("/")}.${asset.field}`,
+      `Uploaded ${path.basename(asset.localPath)} and updated ${asset.documentPath.join("/")}.${fieldPath.join(".")}`,
     );
   }
 
@@ -634,8 +731,9 @@ async function uploadAssetsToStorage() {
 async function updateAssetDocuments(updates) {
   for (const { asset, assetUrl } of updates) {
     const documentRef = db.doc(asset.documentPath.join("/"));
+    const fieldPath = getAssetFieldPath(asset);
     console.log(`Updating document: ${documentRef.path}`);
-    await documentRef.set({ [asset.field]: assetUrl }, { merge: true });
+    await documentRef.set(getNestedUpdate(fieldPath, assetUrl), { merge: true });
   }
 }
 
