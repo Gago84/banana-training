@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { collection, doc, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase/config";
 import qrCodeAndroid from "./assets/QRcode-android.svg";
@@ -289,52 +289,132 @@ function formatRoutinePrescription(day, lang) {
 
 function RoutineTable({ section, lang }) {
   const days = Array.isArray(section.days) ? section.days.slice().sort(byIndex) : [];
+  const levels = Array.isArray(section.levels) ? section.levels.slice().sort(byIndex) : [];
 
-  if (!days.length) return null;
+  if (!days.length && !levels.length) return null;
 
   return (
-    <div className="routine-table-wrap">
-      <table className="routine-table">
-        <caption>{localized(section, "caption", lang) || "Day"}</caption>
+    <>
+      {days.length > 0 && (
+        <div className="routine-table-wrap">
+          <table className="routine-table">
+            <caption>{localized(section, "caption", lang) || "Day"}</caption>
+            <thead>
+              <tr>
+                {days.map((day) => (
+                  <th key={day.key}>
+                    <span className="routine-day">{localized(day, "label", lang)}</span>
+                    <strong>{localized(day, "title", lang)}</strong>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {days.map((day) => (
+                  <td key={`${day.key}-items`} className={day.rest ? "routine-rest-cell" : ""}>
+                    {day.rest ? (
+                      <span className="routine-rest">{localized(day, "restLabel", lang) || "Rest"}</span>
+                    ) : (
+                      <ul>
+                        {(day.items || []).map((item) => (
+                          <li key={`${day.key}-${item}`}>{item}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </td>
+                ))}
+              </tr>
+              <tr className="routine-prescription-row">
+                {days.map((day) => (
+                  <td key={`${day.key}-prescription`}>
+                    {formatRoutinePrescription(day, lang) ? (
+                      <span>{formatRoutinePrescription(day, lang)}</span>
+                    ) : day.rest ? (
+                      <span className="routine-rest">{localized(day, "restLabel", lang) || "Rest"}</span>
+                    ) : (
+                      <span aria-hidden="true">&nbsp;</span>
+                    )}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {levels.map((level) => (
+        <RoutineLevelTable key={level.key} level={level} lang={lang} />
+      ))}
+    </>
+  );
+}
+
+function RoutineLevelTable({ level, lang }) {
+  const days = Array.isArray(level.days) ? level.days.slice().sort(byIndex) : [];
+  const maxRows = days.reduce((count, day) => Math.max(count, day.rows?.length || 0), 0);
+
+  if (!days.length || !maxRows) return null;
+
+  return (
+    <div className="routine-level-table-wrap">
+      <table className="routine-level-table">
+        <caption>{localized(level, "title", lang)}</caption>
         <thead>
-          <tr>
+          <tr className="routine-level-day-row">
             {days.map((day) => (
-              <th key={day.key}>
-                <span className="routine-day">{localized(day, "label", lang)}</span>
-                <strong>{localized(day, "title", lang)}</strong>
+              <th key={`${level.key}-${day.key}-day`} colSpan={day.rest ? 1 : 2}>
+                {localized(day, "label", lang)}
               </th>
             ))}
           </tr>
+          <tr>
+            {days.map((day) =>
+              day.rest ? (
+                <th key={`${level.key}-${day.key}-rest`}>{localized(day, "title", lang)}</th>
+              ) : (
+                <Fragment key={`${level.key}-${day.key}-columns`}>
+                  <th key={`${level.key}-${day.key}-title`}>{localized(day, "title", lang)}</th>
+                  <th key={`${level.key}-${day.key}-prescription`}>
+                    {localized(day, "prescriptionLabel", lang)}
+                  </th>
+                </Fragment>
+              ),
+            )}
+          </tr>
         </thead>
         <tbody>
-          <tr>
-            {days.map((day) => (
-              <td key={`${day.key}-items`} className={day.rest ? "routine-rest-cell" : ""}>
-                {day.rest ? (
-                  <span className="routine-rest">{localized(day, "restLabel", lang) || "Rest"}</span>
-                ) : (
-                  <ul>
-                    {(day.items || []).map((item) => (
-                      <li key={`${day.key}-${item}`}>{item}</li>
-                    ))}
-                  </ul>
-                )}
-              </td>
-            ))}
-          </tr>
-          <tr className="routine-prescription-row">
-            {days.map((day) => (
-              <td key={`${day.key}-prescription`}>
-                {formatRoutinePrescription(day, lang) ? (
-                  <span>{formatRoutinePrescription(day, lang)}</span>
-                ) : day.rest ? (
-                  <span className="routine-rest">{localized(day, "restLabel", lang) || "Rest"}</span>
-                ) : (
-                  <span aria-hidden="true">&nbsp;</span>
-                )}
-              </td>
-            ))}
-          </tr>
+          {Array.from({ length: maxRows }, (_, rowIndex) => (
+            <tr key={`${level.key}-row-${rowIndex}`}>
+              {days.map((day) => {
+                if (day.rest) {
+                  return (
+                    <td
+                      key={`${level.key}-${day.key}-${rowIndex}-rest`}
+                      className="routine-rest-cell"
+                    >
+                      {rowIndex === 0 ? (
+                        <span className="routine-rest">{localized(day, "restLabel", lang) || "Rest"}</span>
+                      ) : (
+                        <span aria-hidden="true">&nbsp;</span>
+                      )}
+                    </td>
+                  );
+                }
+
+                const row = day.rows?.[rowIndex];
+
+                return (
+                  <Fragment key={`${level.key}-${day.key}-${rowIndex}-cells`}>
+                    <td key={`${level.key}-${day.key}-${rowIndex}-item`}>{row?.item || ""}</td>
+                    <td key={`${level.key}-${day.key}-${rowIndex}-prescription`}>
+                      {row?.prescription || ""}
+                    </td>
+                  </Fragment>
+                );
+              })}
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>
